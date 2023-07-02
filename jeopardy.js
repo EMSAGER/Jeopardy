@@ -18,18 +18,44 @@
 //    ...
 //  ]
 
+                    //what are your constants? Number of Categories = 6, number of Clues per Category = 5;
+const numOfCategories = 6;
+const questionsPerCategory = 5;
+
+
 let categories = [];
 
 async function getRandomCategory(){
-    const res = await axios.get('https://jservice.io/api/categories');
-    console.log(res);
+    let res = await axios.get('https://jservice.io/api/categories?count=100');
+    //console.log(res.data);
+    let catIDs = res.data.map(cat => cat.id);
+    //console.log(catIDs);
+    return _.sampleSize(catIDs, 6);
+    //console.log(randomCats);
+    
 }
 /** Get NUM_CATEGORIES random category from API.
  *
  * Returns array of category ids
  */
 
-function getCategoryIds() {
+async function getCategoryIds(catID) {
+    let res = await axios.get(`https://jservice.io/api/category?id=${catID}`);
+    let cat = res.data;
+    //console.log(cat);
+    let allClues = cat.clues;
+    //console.log(allClues);
+    let randomClues = _.sampleSize(allClues, 5);
+    //console.log(randomClues);
+    let clues = randomClues.map(clue =>({
+       question: clue.question,
+        answer: clue.answer,
+        showing: null,
+        }));
+    //console.log(clues);
+    //console.log( {title: cat.title, clues});
+    return  {title: cat.title, clues};
+    
 }
 
 /** Return object with data about a category:
