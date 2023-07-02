@@ -20,7 +20,10 @@
 
 let categories = [];
 
-
+async function getRandomCategory(){
+    const res = await axios.get('https://jservice.io/api/categories');
+    console.log(res);
+}
 /** Get NUM_CATEGORIES random category from API.
  *
  * Returns array of category ids
