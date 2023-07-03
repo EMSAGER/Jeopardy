@@ -30,7 +30,7 @@ async function getRandomCategory(){
     //console.log(res.data);
     let catIDs = res.data.map(cat => cat.id);
     //console.log(catIDs);
-    return _.sampleSize(catIDs, 6);
+    return _.sampleSize(catIDs, numOfCategories);
     //console.log(randomCats);
     
 }
@@ -45,7 +45,7 @@ async function getCategoryIds(catID) {
     //console.log(cat);
     let allClues = cat.clues;
     //console.log(allClues);
-    let randomClues = _.sampleSize(allClues, 5);
+    let randomClues = _.sampleSize(allClues, questionsPerCategory);
     //console.log(randomClues);
     let clues = randomClues.map(clue =>({
        question: clue.question,
