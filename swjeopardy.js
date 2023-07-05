@@ -22,6 +22,7 @@
                     //Create constants based on your parameters. what are your parameters? Number of Categories = 6, number of Clues per Category = 5;
 const numOfCategories = 6;
 const questionsPerCategory = 5;
+const baseURL = "https://swapi.dev/api";
 let $jeopardyHead = $("#jeopardy-head");
 let $jeopardyBody = $("#jeopardy-body");
 
@@ -29,18 +30,16 @@ let $jeopardyBody = $("#jeopardy-body");
 let categories = [];
 
 async function getRandomCategory(){
-    /** Get NUM_CATEGORIES random category from API.
- *
- * Returns array of category ids
- */
-
-    let res = await axios.get('https://jservice.io/api/categories?count=100');
-            console.log(res.data);
-    let catIDs = res.data.map(cat => cat.id);
-            console.log(catIDs);
-    return _.sampleSize(catIDs, numOfCategories);
-    console.log(randomCats);
-    
+    const response = await axios.get(baseURL);
+    let catIds = Object.keys(response.data);
+    console.log(catIds);
+    return catIds;
+   
+  
+    //let catIDs = res.data.map(cat => cat.id);
+            //console.log(catIDs);
+    //return _.sampleSize(catIDs, numOfCategories);
+    //console.log(randomCats);
 }
 
 async function getCategory(catID) {
@@ -57,21 +56,40 @@ async function getCategory(catID) {
  *   ]
  */
 
-    let res = await axios.get(`https://jservice.io/api/category?id=${catID}`);
-    let cat = res.data;
-    // console.log(cat);
-    let allClues = cat.clues;
-    // console.log(allClues);
-    let randomClues = _.sampleSize(allClues, questionsPerCategory);
-    // //console.log(randomClues);
-    let clues = randomClues.map(clue =>({
-       question: clue.question,
-        answer: clue.answer,
-        showing: null,
-        }));
-    // //console.log(clues);
-    // //console.log( {title: cat.title, clues});
-    return  {title: cat.title, clues};
+    let res = await axios.get(`https://swapi.dev/api/${catID}`);
+    let allData = res.data.results;
+    //console.log(allData);
+    let clues = allData.map(questions =>{
+      for (let c in questions){
+        let ctitle = Object.keys(questions)[1];
+        let ca = Object.values(questions);
+        //console.log(ca[0]);
+
+        let characteristic = ctitle + " = " + ca[1];
+        //console.log(characteristic);
+        // let characteristics =  "The characteristics are: " + ctitle + "are" +ca[1];
+        return{
+          Question: `What ${ctitle} does ${questions.name} have?`,
+          Answer: characteristic,
+          showing: null
+        };
+      }
+    })
+    console.log(clues);
+
+  //  console.log(test);
+    // let allClues = cat.clues;
+    // // console.log(allClues);
+    // let randomClues = _.sampleSize(allClues, questionsPerCategory);
+    // // //console.log(randomClues);
+    // let clues = randomClues.map(clue =>({
+    //    question: clue.question,
+    //     answer: clue.answer,
+    //     showing: null,
+    //     }));
+    // // //console.log(clues);
+    // // //console.log( {title: cat.title, clues});
+    // return  {title: cat.title, clues};
     
 }
 
@@ -84,25 +102,25 @@ async function getCategory(catID) {
  */
 
 async function fillTable() {
-    //empty out the Jeopardy Head
-    $jeopardyHead.empty();
-    //add a row with headers with categories - now loop through the array of Objects and each index to get the title
+    // //empty out the Jeopardy Head
+    // $jeopardyHead.empty();
+    // //add a row with headers with categories - now loop through the array of Objects and each index to get the title
 
-    let $tr = $("<tr>");
-    for(let catIdx = 0; catIdx < numOfCategories; catIdx++){
-        $tr.append($("<th>")).text(testClues[catIdx].title);
-    };
-    //console.log($tr);
-    $jeopardyHead.append($tr);
+    // let $tr = $("<tr>");
+    // for(let catIdx = 0; catIdx < numOfCategories; catIdx++){
+    //     $tr.append($("<th>")).text(testClues[catIdx].title);
+    // };
+    // //console.log($tr);
+    // $jeopardyHead.append($tr);
 
-    //Add rows w/ questions & clear out the body
-    //think of the connect 4 {x}-{y} coordinates
-    $jeopardyBody.empty();
-    for (let clueIdx = 0; clueIdx < questionsPerCategory; clueIdx++){
-        console.log($tr);
-        $tr.append($("<td>")).attr("id",`${catIdx}-${clueIdx}`);
-        console.log($tr);
-    }
+    // //Add rows w/ questions & clear out the body
+    // //think of the connect 4 {x}-{y} coordinates
+    // $jeopardyBody.empty();
+    // for (let clueIdx = 0; clueIdx < questionsPerCategory; clueIdx++){
+    //     console.log($tr);
+    //     $tr.append($("<td>")).attr("id",`${catIdx}-${clueIdx}`);
+    //     console.log($tr);
+    // }
 
 }
 
