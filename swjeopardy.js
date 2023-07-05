@@ -58,8 +58,9 @@ async function getCategory(catID) {
 
     let res = await axios.get(`https://swapi.dev/api/${catID}`);
     let allData = res.data.results;
+    let catName = catID;
     //console.log(allData);
-    let clues = allData.map(questions =>{
+    let cluesArray = allData.map(questions =>{
       for (let c in questions){
         let ctitle = Object.keys(questions)[1];
         let ca = Object.values(questions);
@@ -75,13 +76,17 @@ async function getCategory(catID) {
         };
       }
     })
-    console.log(clues);
-
-  //  console.log(test);
+    let cluesObject = {
+      title: catName,
+      clues: cluesArray};
+    //console.log(cluesObject);
+    let allClues = cluesObject.clues;
+    //console.log(allClues);
+  
     // let allClues = cat.clues;
     // // console.log(allClues);
-    // let randomClues = _.sampleSize(allClues, questionsPerCategory);
-    // // //console.log(randomClues);
+    let randomClues = _.sampleSize(allClues, questionsPerCategory);
+    console.log(randomClues);
     // let clues = randomClues.map(clue =>({
     //    question: clue.question,
     //     answer: clue.answer,
