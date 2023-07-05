@@ -154,6 +154,16 @@ async function fillTable() {
     };
     //console.log($tr);
     $jeopardyHead.append($tr);
+
+    //Add rows w/ questions & clear out the body
+    //think of the connect 4 {x}-{y} coordinates
+    $jeopardyBody.empty();
+    for (let clueIdx = 0; clueIdx < questionsPerCategory; clueIdx++){
+        console.log($tr);
+        $tr.append($("<td>")).attr("id",`${catIdx}-${clueIdx}`);
+        console.log($tr);
+    }
+
 }
 
 /** Handle clicking on a clue: show the question or answer.
