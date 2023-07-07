@@ -1,15 +1,7 @@
-/* some colors you may find useful:
-  #115ff4
-  
-  #28a200
-  #8d2ab5
-  #74119c
-*/
-
-body {
+#jeopardy {
   text-align: center;
   font-size: 12pt;
-  background-color: #060ce9;
+  background-color: #115ff4;
   color: white;
   border-collapse: collapse;
 }
