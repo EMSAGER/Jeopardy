@@ -99,7 +99,7 @@ function handleClick(e) {
   let id = e.target.id;
   let [catIdx, clueIdx] = id.split("-");
   let clue = categories[catIdx].clues[clueIdx];
-  console.log(clue);
+  //console.log(clue);
   let cardFace;
   if(!clue.showing){
     cardFace = clue.question;
@@ -112,7 +112,7 @@ function handleClick(e) {
   else{
     return;
   }
-  console.log($(`#${catIdx}-${clueIdx}`).html(cardFace));
+  //console.log($(`#${catIdx}-${clueIdx}`).html(cardFace));
 }
 
 /** Wipe the current Jeopardy board, show the loading spinner,
@@ -143,7 +143,7 @@ async function setupAndStart() {
   for(let catID of catIDs){
     categories.push(await getCategory(catID));
   }
-  console.log(categories);
+  //console.log(categories);
   fillTable(categories);
 }
 
@@ -153,7 +153,11 @@ $("#start").on("click", setupAndStart);
 
 /** On page load, add event handler for clicking clues */
 // $(async function(){
-//   setupAndStart();
-//   $("#jeopardy").on("click", "td", handleClick);
+//   await setupAndStart();
+//   // await $("#jeopardy").on("click", "clueIdx", handleClick);
 // });
 // TODO
+$(async function(){
+  setupAndStart;
+  await $("#jeopardy").on("click", "td", handleClick);
+})
