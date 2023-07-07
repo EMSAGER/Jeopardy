@@ -17,9 +17,7 @@
 //    },
 //    ...
 //  ]
-                    //Create constants based on your parameters. what are your parameters? Number of Categories = 6, number of Clues per Category = 5;
-const numOfCategories = 6;
-const questionsPerCategory = 5;
+                    //Create constants based on your parameters. what are your parameters? Number of Categories 
 let $jeopardyHead = $("#jeopardy-head");
 let $jeopardyBody = $("#jeopardy-body");
 
@@ -31,8 +29,8 @@ async function getCategoryIds(){
  * Returns array of category ids
  */
     let res = await axios.get('https://jservice.io/api/categories?count=100');
-    let catIDs = res.data.map(cat => cat.id);
-    return _.sampleSize(catIDs, numOfCategories);
+    let catIDs = _.sampleSize(res.data.map(cat => cat.id),6);
+    return catIDs;
 }
 
 async function getCategory(catID) {
@@ -45,16 +43,16 @@ async function getCategory(catID) {
     let allClues = cat.clues;
         
             //randomnize the clues
-    let randomClues = _.sampleSize(allClues, questionsPerCategory);
+    let randomClues = _.sampleSize(allClues, 5);
             //create an array of clues with the randominized sample of clues
-    let cluesArray = randomClues.map(clue =>({
+    let clues = randomClues.map(clue =>({
        question: clue.question,
         answer: clue.answer,
         showing: null,
         }));
   
                 // return an object that k:v title: categoryTitle, then the clues Array
-  return { title: cat.title, clues: cluesArray};
+  return { title: cat.title, clues: clues};
 };
 
 /** Fill the HTML table#jeopardy with the categories & cells for questions.
@@ -70,22 +68,23 @@ async function fillTable() {
     $jeopardyHead.empty();
           //add a row with headers with categories - now loop through the array of Objects and each index to get the title
     let $tr = $("<tr>");
-    for (let catIdx = 0; catIdx < numOfCategories; catIdx++){
+    for (let catIdx = 0; catIdx < 6; catIdx++){
       $tr.append($("<th>").text(categories[catIdx].title));
+
     };
     $jeopardyHead.append($tr);
 
     //Add rows w/ questions & clear out the body
     //think of the connect 4 {x}-{y} coordinates
     $jeopardyBody.empty();
-    for (let clueIdx = 0; clueIdx < questionsPerCategory; clueIdx++){
-        let $tr = $("<tr>");
-        for(let catIdx = 0; catIdx < numOfCategories; catIdx++){
-          $tr.append($("<td>")).attr("id",`${catIdx}-${clueIdx}`).text("?");
+    for (let clueIdx = 0; clueIdx < 5; clueIdx++){
+        let $tr = $("<tr>");                    //notes for future: this bug was based on (), double check punctuation w/ loop errors
+        for(let catIdx = 0; catIdx < 6; catIdx++){
+          $tr.append($("<td>").attr("id",`${catIdx}-${clueIdx}`).text("?"));
         } 
     $jeopardyBody.append($tr);
-    //console.log($jeopardyBody);
   }
+  
 }
 
 /** Handle clicking on a clue: show the question or answer.
@@ -98,9 +97,22 @@ async function fillTable() {
 
 function handleClick(e) {
   let id = e.target.id;
-  let [catID, clueID] = id.split("-");
-  let clue = categories[catID].clues[clueID];
+  let [catIdx, clueIdx] = id.split("-");
+  let clue = categories[catIdx].clues[clueIdx];
   console.log(clue);
+  let cardFace;
+  if(!clue.showing){
+    cardFace = clue.question;
+    clue.showing = "question";
+  } 
+  else if (clue.showing === "question"){
+    msg = clue.answer;
+    clue.showing = "answer";
+  }
+  else{
+    return;
+  }
+  console.log($(`#${catIdx}-${clueIdx}`).html(cardFace));
 }
 
 /** Wipe the current Jeopardy board, show the loading spinner,
@@ -108,12 +120,14 @@ function handleClick(e) {
  */
 
 function showLoadingView() {
+  $jeopardyBody.empty();
 
 }
 
 /** Remove the loading spinner and update the button used to fetch data. */
 
 function hideLoadingView() {
+
 }
 
 /** Start game:
@@ -127,15 +141,19 @@ async function setupAndStart() {
   let catIDs = await getCategoryIds();
   categories = [];
   for(let catID of catIDs){
-    categories.push(await getCategoryIds(catID));
+    categories.push(await getCategory(catID));
   }
-  fillTable();
+  console.log(categories);
+  fillTable(categories);
 }
 
 /** On click of start / restart button, set up game. */
-
+$("#start").on("click", setupAndStart);
 // TODO
 
 /** On page load, add event handler for clicking clues */
-
+// $(async function(){
+//   setupAndStart();
+//   $("#jeopardy").on("click", "td", handleClick);
+// });
 // TODO
