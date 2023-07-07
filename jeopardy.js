@@ -17,63 +17,45 @@
 //    },
 //    ...
 //  ]
-
-
                     //Create constants based on your parameters. what are your parameters? Number of Categories = 6, number of Clues per Category = 5;
 const numOfCategories = 6;
 const questionsPerCategory = 5;
 let $jeopardyHead = $("#jeopardy-head");
 let $jeopardyBody = $("#jeopardy-body");
 
-
 let categories = [];
 
-async function getRandomCategory(){
+async function getCategoryIds(){
     /** Get NUM_CATEGORIES random category from API.
  *
  * Returns array of category ids
  */
-
     let res = await axios.get('https://jservice.io/api/categories?count=100');
-            console.log(res.data);
     let catIDs = res.data.map(cat => cat.id);
-            console.log(catIDs);
     return _.sampleSize(catIDs, numOfCategories);
-    console.log(randomCats);
-    
 }
 
 async function getCategory(catID) {
-
 /** Return object with data about a category:
- *
  *  Returns { title: "Math", clues: clue-array }
- *
- * Where clue-array is:
- *   [
- *      {question: "Hamlet Author", answer: "Shakespeare", showing: null},
- *      {question: "Bell Jar Author", answer: "Plath", showing: null},
- *      ...
- *   ]
- */
-
+ *///pull data for a specified category & assign it to a variable
     let res = await axios.get(`https://jservice.io/api/category?id=${catID}`);
     let cat = res.data;
-    //console.log(cat);
+          //create a variable that only returns clues
     let allClues = cat.clues;
-    //console.log(allClues);
+        
+            //randomnize the clues
     let randomClues = _.sampleSize(allClues, questionsPerCategory);
-    //console.log(randomClues);
-    let clues = randomClues.map(clue =>({
+            //create an array of clues with the randominized sample of clues
+    let cluesArray = randomClues.map(clue =>({
        question: clue.question,
         answer: clue.answer,
         showing: null,
         }));
-    //console.log(clues);
-    //console.log( {title: cat.title, clues});
-    return  {title: cat.title, clues};
-    
-}
+  
+                // return an object that k:v title: categoryTitle, then the clues Array
+  return { title: cat.title, clues: cluesArray};
+};
 
 /** Fill the HTML table#jeopardy with the categories & cells for questions.
  *
@@ -86,26 +68,24 @@ async function getCategory(catID) {
 async function fillTable() {
     //empty out the Jeopardy Head
     $jeopardyHead.empty();
-    //add a row with headers with categories - now loop through the array of Objects and each index to get the title
-
+          //add a row with headers with categories - now loop through the array of Objects and each index to get the title
     let $tr = $("<tr>");
-    for(let catIdx = 0; catIdx < numOfCategories; catIdx++){
-        console.log(testClues[catIdx].title);
-       // $tr.append($("<th>")).text(testClues[catIdx].title);
-        $tr.append($("<th>")).text(Categories[catIdx].title);
+    for (let catIdx = 0; catIdx < numOfCategories; catIdx++){
+      $tr.append($("<th>").text(categories[catIdx].title));
     };
-    //console.log($tr);
     $jeopardyHead.append($tr);
 
     //Add rows w/ questions & clear out the body
     //think of the connect 4 {x}-{y} coordinates
     $jeopardyBody.empty();
     for (let clueIdx = 0; clueIdx < questionsPerCategory; clueIdx++){
-        console.log($tr);
-        $tr.append($("<td>")).attr("id",`${catIdx}-${clueIdx}`);
-        console.log($tr);
-    }
-
+        let $tr = $("<tr>");
+        for(let catIdx = 0; catIdx < numOfCategories; catIdx++){
+          $tr.append($("<td>")).attr("id",`${catIdx}-${clueIdx}`).text("?");
+        } 
+    $jeopardyBody.append($tr);
+    //console.log($jeopardyBody);
+  }
 }
 
 /** Handle clicking on a clue: show the question or answer.
@@ -117,6 +97,10 @@ async function fillTable() {
  * */
 
 function handleClick(e) {
+  let id = e.target.id;
+  let [catID, clueID] = id.split("-");
+  let clue = categories[catID].clues[clueID];
+  console.log(clue);
 }
 
 /** Wipe the current Jeopardy board, show the loading spinner,
@@ -140,6 +124,12 @@ function hideLoadingView() {
  * */
 
 async function setupAndStart() {
+  let catIDs = await getCategoryIds();
+  categories = [];
+  for(let catID of catIDs){
+    categories.push(await getCategoryIds(catID));
+  }
+  fillTable();
 }
 
 /** On click of start / restart button, set up game. */

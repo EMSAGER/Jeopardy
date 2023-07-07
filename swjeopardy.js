@@ -58,7 +58,6 @@ async function getCategory(catID) {
 
     let res = await axios.get(`https://swapi.dev/api/${catID}`);
     let allData = res.data.results;
-    let catName = catID;
     //console.log(allData);
     let cluesArray = allData.map(questions =>{
       for (let c in questions){
@@ -95,7 +94,7 @@ async function getCategory(catID) {
     // console.log(clues);
     // // //console.log( {title: cat.title, clues});
     // console.log({title: catName, clues});
-    return  {title: catName, clues};
+    return  {title: catID.t, clues};
     
 }
 
@@ -114,8 +113,11 @@ async function fillTable() {
 
     let $tr = $("<tr>");
     for(let catIdx = 0; catIdx < numOfCategories; catIdx++){
-        $tr.append($("<th>")).text(testClues[catIdx].title);
+        $tr.append($("<th>")).text([catIdx].title);
     };
+
+
+
     //console.log($tr);
     $jeopardyHead.append($tr);
 
