@@ -97,22 +97,26 @@ async function fillTable() {
 
 function handleClick(e) {
   let id = e.target.id;
-  let [catIdx, clueIdx] = id.split("-");
-  let clue = categories[catIdx].clues[clueIdx];
-  //console.log(clue);
-  let cardFace;
-  if(!clue.showing){
-    cardFace = clue.question;
-    clue.showing = "question";
-  } 
-  else if (clue.showing === "question"){
-    msg = clue.answer;
-    clue.showing = "answer";
-  }
-  else{
-    return;
-  }
-  //console.log($(`#${catIdx}-${clueIdx}`).html(cardFace));
+  console.log(id);
+  
+  // let [catIdx, clueIdx] = id.split("-");
+  // let clue = categories[catIdx].clues[clueIdx];
+  // console.log(clue);
+  // let cardFace;
+  // if(!clue.showing){
+  //   cardFace = clue.question;
+  //   clue.showing = "question";
+  //   console.log(cardFace);
+  // } 
+  // else if (clue.showing === "question"){
+  //   cardFace = clue.answer;
+  //   clue.showing = "answer";
+  //   console.log(cardFace);
+  // }
+  // else{
+  //   return;
+  // }
+  // return ($(`#${catIdx}-${clueIdx}`).html(cardFace));
 }
 
 /** Wipe the current Jeopardy board, show the loading spinner,
@@ -152,12 +156,9 @@ $("#start").on("click", setupAndStart);
 // TODO
 
 /** On page load, add event handler for clicking clues */
-// $(async function(){
-//   await setupAndStart();
-//   // await $("#jeopardy").on("click", "clueIdx", handleClick);
-// });
+
 // TODO
-$(async function(){
+async function alltheClicks(){
   setupAndStart;
-  await $("#jeopardy").on("click", "td", handleClick);
-})
+  await $jeopardyBody.on("click", $td, handleClick);
+}
