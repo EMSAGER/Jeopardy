@@ -84,7 +84,8 @@ async function fillTable() {
         } 
     $jeopardyBody.append($tr);
   }
-  
+    // let $restartButton = $("<button id>").attr("id", "restart-button").text("Restart");
+    // $jeopardyBody.append($restartButton);
 }
 
 /** Handle clicking on a clue: show the question or answer.
@@ -95,43 +96,48 @@ async function fillTable() {
  * - if currently "answer", ignore click
  * */
 
-function handleClick(e) {
+async function handleClick(e) {
+  //console.log(e.target.id);
   let id = e.target.id;
-  console.log(id);
+  //console.log(id);
   
-  // let [catIdx, clueIdx] = id.split("-");
-  // let clue = categories[catIdx].clues[clueIdx];
-  // console.log(clue);
-  // let cardFace;
-  // if(!clue.showing){
-  //   cardFace = clue.question;
-  //   clue.showing = "question";
-  //   console.log(cardFace);
-  // } 
-  // else if (clue.showing === "question"){
-  //   cardFace = clue.answer;
-  //   clue.showing = "answer";
-  //   console.log(cardFace);
-  // }
-  // else{
-  //   return;
-  // }
-  // return ($(`#${catIdx}-${clueIdx}`).html(cardFace));
-}
+  let [catIdx, clueIdx] = id.split("-");
+  let clue = categories[catIdx].clues[clueIdx];
+  //console.log(clue);
+  let cardFace;
+  if(!clue.showing){
+    cardFace = clue.question;
+    clue.showing = "question";
+    //console.log(cardFace);
+  } 
+  else if (clue.showing === "question"){
+    cardFace = clue.answer;
+    clue.showing = "answer";
+    //console.log(cardFace);
+  }
+  else{
+    return;
+  }
+  return ($(`#${catIdx}-${clueIdx}`).html(cardFace));
+};
 
 /** Wipe the current Jeopardy board, show the loading spinner,
  * and update the button used to fetch data.
  */
 
 function showLoadingView() {
-  $jeopardyBody.empty();
-
+  $("#jeopardy").empty();
+  $(".BOARD").toggle();
+  $(".SPIN").show();
+  console.log("test");
 }
 
 /** Remove the loading spinner and update the button used to fetch data. */
 
 function hideLoadingView() {
-
+    $(".SPIN").hide();
+    $("#start").hide();
+    $(".BOARD").toggle();
 }
 
 /** Start game:
@@ -142,23 +148,32 @@ function hideLoadingView() {
  * */
 
 async function setupAndStart() {
+  
   let catIDs = await getCategoryIds();
   categories = [];
   for(let catID of catIDs){
     categories.push(await getCategory(catID));
   }
   //console.log(categories);
+  
   fillTable(categories);
+  let $restartButton = $("<button id>").attr("id", "restart").text("Restart");
+  $(".container").append($restartButton);
+  hideLoadingView();
 }
 
 /** On click of start / restart button, set up game. */
 $("#start").on("click", setupAndStart);
+
+$("#restart").on("click", async function(){
+  console.log("test");
+});
 // TODO
 
 /** On page load, add event handler for clicking clues */
 
-// TODO
-async function alltheClicks(){
+$(async function(){
   setupAndStart;
-  await $jeopardyBody.on("click", $td, handleClick);
-}
+  $("#jeopardy").on("click", "td", handleClick);
+});
+  
