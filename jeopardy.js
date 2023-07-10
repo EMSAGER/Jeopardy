@@ -63,7 +63,7 @@ async function getCategory(catID) {
  *   (initally, just show a "?" where the question/answer would go.)
  */
 
-async function fillTable() {
+function fillTable() {
     //empty out the Jeopardy Head
     $jeopardyHead.empty();
           //add a row with headers with categories - now loop through the array of Objects and each index to get the title
@@ -80,7 +80,7 @@ async function fillTable() {
     for (let clueIdx = 0; clueIdx < 5; clueIdx++){
         let $tr = $("<tr>");                    //notes for future: this bug was based on (), double check punctuation w/ loop errors
         for(let catIdx = 0; catIdx < 6; catIdx++){
-          $tr.append($("<td>").attr("id",`${catIdx}-${clueIdx}`).attr("class", "align-middle").text("?"));
+          $tr.append($("<td>").attr("id",`${catIdx}-${clueIdx}`).attr("class", "align-middle UNCLICKED").text("?"));
         } 
     $jeopardyBody.append($tr);
   }
@@ -97,17 +97,22 @@ async function fillTable() {
  * */
 
 async function handleClick(e) {
-  //console.log(e.target.id);
+  // $(e.target).toggle("UNCLICKED");
+  // $(e.target).removeClass("UNCLICKED");
   let id = e.target.id;
   //console.log(id);
-  
+  // id.toggleClass("UNCLICKED");
+
   let [catIdx, clueIdx] = id.split("-");
   let clue = categories[catIdx].clues[clueIdx];
-  //console.log(clue);
+  
+  // console.log(clue);
   let cardFace;
   if(!clue.showing){
+    
     cardFace = clue.question;
     clue.showing = "question";
+    // clue.clues.toggle("CLICKED");
     //console.log(cardFace);
   } 
   else if (clue.showing === "question"){
@@ -173,6 +178,12 @@ $("#start").on("click", setupAndStart);
 
 $(async function(){
   setupAndStart;
+  
+  $("#jeopardy-body").on("click", "td", function(e){
+    $(e.target).removeClass("UNCLICKED");
+    $(e.target).addClass("CLICKED");
+    console.log(e.target);
+  });
   $("#jeopardy").on("click", "td", handleClick);
   $("#restart").on("click", showLoadingView);
   });

@@ -9,7 +9,7 @@
   
   #jeopardy-head #jeopardy-body{
     border: solid 1px white;
-    width: 10em;
+    
     margin: auto;
     text-align: center;
   }
@@ -18,30 +18,41 @@
     text-transform: uppercase;
     font-weight: bold;
     height: 5em;
+    width: 10em;
     font-size: 12pt;
     text-shadow: goldenrod 1px 1px;
     
   }
-  
-  td{
+ td{
     height: 10em;
-    text-transform: capitalize;
-    font-size: 15pt;
+    width: 10em;
+    /* width: 20em; */
   }
-  td:visited{
-    background-color:#3579f8;
+  
+  
+ td.UNCLICKED {
+    
     font-size: 15pt;
+    background-color: #060ce9;
+  }
+
+  
+  td.CLICKED{
+    
+    background-color:#3579f8;
+    font-size: 12pt;
     overflow-wrap: break-word;
+    text-transform: capitalize;
   }
 
  td:hover {
     cursor: pointer;
   }
 
-  td:active {
+  /* td:active {
     font-size: 15pt;
     overflow-wrap: break-word; 
-  }
+  } */
 
   /* td:visited{
     background-color:#3579f8;
