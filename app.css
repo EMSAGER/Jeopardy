@@ -28,17 +28,26 @@
     text-transform: capitalize;
     font-size: 15pt;
   }
-  
-  /* td :active {
-    font-size: 15pt;
-    overflow-wrap: break-word; 
+  td:visited{
     background-color:#3579f8;
-  } */
+    font-size: 15pt;
+    overflow-wrap: break-word;
+  }
 
-  #jeopardy-body:hover {
+ td:hover {
     cursor: pointer;
   }
 
+  td:active {
+    font-size: 15pt;
+    overflow-wrap: break-word; 
+  }
+
+  /* td:visited{
+    background-color:#3579f8;
+    font-size: 15pt;
+    overflow-wrap: break-word;
+  } */
 
   #restart-button {
     background-color: goldenrod;
