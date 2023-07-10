@@ -26,16 +26,19 @@
   td{
     height: 10em;
     text-transform: capitalize;
-    font-size: 10pt;
+    font-size: 15pt;
   }
   
+  /* td :active {
+    font-size: 15pt;
+    overflow-wrap: break-word; 
+    background-color:#3579f8;
+  } */
+
   #jeopardy-body:hover {
     cursor: pointer;
   }
 
-  #jeopardy-body:clicked {
-    background-color:#3579f8;
-  }
 
   #restart-button {
     background-color: goldenrod;

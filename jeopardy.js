@@ -69,7 +69,7 @@ async function fillTable() {
           //add a row with headers with categories - now loop through the array of Objects and each index to get the title
     let $tr = $("<tr>");
     for (let catIdx = 0; catIdx < 6; catIdx++){
-      $tr.append($("<th>").text(categories[catIdx].title));
+      $tr.append($("<th>").attr("class", "col-2 align-middle").text(categories[catIdx].title));
 
     };
     $jeopardyHead.append($tr);
@@ -80,7 +80,7 @@ async function fillTable() {
     for (let clueIdx = 0; clueIdx < 5; clueIdx++){
         let $tr = $("<tr>");                    //notes for future: this bug was based on (), double check punctuation w/ loop errors
         for(let catIdx = 0; catIdx < 6; catIdx++){
-          $tr.append($("<td>").attr("id",`${catIdx}-${clueIdx}`).text("?"));
+          $tr.append($("<td>").attr("id",`${catIdx}-${clueIdx}`).attr("class", "align-middle").text("?"));
         } 
     $jeopardyBody.append($tr);
   }
@@ -126,10 +126,11 @@ async function handleClick(e) {
  */
 
 function showLoadingView() {
-  $("#jeopardy").empty();
-  $(".BOARD").toggle();
+  $("#jeopardy.data").empty();
   $(".SPIN").show();
-  console.log("test");
+  $("#start").show();
+  $(".BOARD").toggle();
+  $("#restart").toggle();
 }
 
 /** Remove the loading spinner and update the button used to fetch data. */
@@ -138,6 +139,7 @@ function hideLoadingView() {
     $(".SPIN").hide();
     $("#start").hide();
     $(".BOARD").toggle();
+    $("#restart").toggle();
 }
 
 /** Start game:
@@ -157,17 +159,14 @@ async function setupAndStart() {
   //console.log(categories);
   
   fillTable(categories);
-  let $restartButton = $("<button id>").attr("id", "restart").text("Restart");
-  $(".container").append($restartButton);
+  // let $restartButton = $("<button id>").attr("id", "restart").text("Restart");
+  // $(".container").append($restartButton);
   hideLoadingView();
 }
 
 /** On click of start / restart button, set up game. */
 $("#start").on("click", setupAndStart);
 
-$("#restart").on("click", async function(){
-  console.log("test");
-});
 // TODO
 
 /** On page load, add event handler for clicking clues */
@@ -175,5 +174,8 @@ $("#restart").on("click", async function(){
 $(async function(){
   setupAndStart;
   $("#jeopardy").on("click", "td", handleClick);
-});
+  $("#restart").on("click", showLoadingView);
+  });
+
   
+//2 bugs: s/r/s => error {headings} & CSS changing background color on tabledata
