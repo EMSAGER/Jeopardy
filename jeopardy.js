@@ -130,13 +130,13 @@ async function handleClick(e) {
  * and update the button used to fetch data.
  */
 
-async function showLoadingView() {
-  $("#jeopardy-head").empty();
+function showLoadingView() {
+  $(".BOARD").empty();
   
   $(".SPIN").show();
   $("#start").show();
-  $(".BOARD").toggle();
-  $("#restart").toggle();
+  $(".BOARD").hide();
+  $("#restart").hide();
 }
 
 /** Remove the loading spinner and update the button used to fetch data. */
@@ -172,7 +172,7 @@ async function setupAndStart() {
 
 /** On click of start / restart button, set up game. */
 $("#start").on("click", setupAndStart);
-
+$("#restart").on("click", showLoadingView);
 // TODO
 
 /** On page load, add event handler for clicking clues */
@@ -180,7 +180,7 @@ $("#start").on("click", setupAndStart);
 $(async function(){
   setupAndStart;
   
-  $("#jeopardy-body").on("click", "td", function(e){
+  $jeopardyBody.on("click", "td", function(e){
     $(e.target).removeClass("UNCLICKED");
     $(e.target).addClass("CLICKED");
     console.log(e.target);
@@ -189,9 +189,11 @@ $(async function(){
 
   $("#restart").on("click", function(){
     $("#jeopardy").empty();
+    showLoadingView();
     // console.log($("#jeopardy"));
-  })
-  $("#restart").on("click", showLoadingView);
+  });
+  // $("#start").on("click", setupAndStart);
+    
   });
 
   
