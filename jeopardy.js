@@ -130,8 +130,9 @@ async function handleClick(e) {
  * and update the button used to fetch data.
  */
 
-function showLoadingView() {
-  $("#jeopardy.data").empty();
+async function showLoadingView() {
+  $("#jeopardy-head").empty();
+  
   $(".SPIN").show();
   $("#start").show();
   $(".BOARD").toggle();
@@ -185,6 +186,11 @@ $(async function(){
     console.log(e.target);
   });
   $("#jeopardy").on("click", "td", handleClick);
+
+  $("#restart").on("click", function(){
+    $("#jeopardy").empty();
+    // console.log($("#jeopardy"));
+  })
   $("#restart").on("click", showLoadingView);
   });
 
