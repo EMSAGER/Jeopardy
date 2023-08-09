@@ -60,7 +60,7 @@
     overflow-wrap: break-word;
   } */
 
-  #restart-button {
+  #restart{
     background-color: goldenrod;
     font-size: 9pt;
     color: black;
