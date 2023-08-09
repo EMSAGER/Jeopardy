@@ -28,8 +28,10 @@ async function getCategoryIds(){
  *
  * Returns array of category ids
  */
+let catIDs = [];
 let res = await axios.get('https://jservice.io/api/categories?count=100');
-let catIDs = _.sampleSize(res.data.map(cat => cat.id),6);
+catIDs = _.sampleSize(res.data.map(cat => cat.id),6);
+//console.log(catIDs);
 return catIDs;
 }
 
@@ -46,11 +48,11 @@ let allClues = cat.clues;
 let randomClues = _.sampleSize(allClues, 5);
     //create an array of clues with the randominized sample of clues
 let clues = randomClues.map(clue =>({
-question: clue.question,
-answer: clue.answer,
-showing: null,
-}));
-
+                                      question: clue.question,
+                                      answer: clue.answer,
+                                      showing: null,
+                                      }));
+                                      
         // return an object that k:v title: categoryTitle, then the clues Array
 return { title: cat.title, clues: clues};
 };
@@ -66,6 +68,7 @@ return { title: cat.title, clues: clues};
 function fillTable() {
 //empty out the Jeopardy Head
 $jeopardyHead.empty();
+console.log(categories);
   //add a row with headers with categories - now loop through the array of Objects and each index to get the title
 let $tr = $("<tr>");
 for (let catIdx = 0; catIdx < 6; catIdx++){
@@ -103,8 +106,8 @@ let id = e.target.id;
 //console.log(id);
 // id.toggleClass("UNCLICKED");
 
-let [catIdx, clueIdx] = id.split("-");
-let clue = categories[catIdx].clues[clueIdx];
+let [catID, clueID] = id.split("-");
+let clue = categories[catID].clues[clueID];
 
 // console.log(clue);
 let cardFace;
@@ -123,7 +126,7 @@ clue.showing = "answer";
 else{
 return;
 }
-return ($(`#${catIdx}-${clueIdx}`).html(cardFace));
+return ($(`#${catID}-${clueID}`).html(cardFace));
 };
 
 /** Wipe the current Jeopardy board, show the loading spinner,
@@ -144,8 +147,8 @@ $("#restart").hide();
 function hideLoadingView() {
 $(".SPIN").hide();
 $("#start").hide();
-$(".BOARD").toggle();
-$("#restart").toggle();
+$(".BOARD").show();
+$("#restart").show();
 }
 
 /** Start game:
