@@ -28,9 +28,9 @@ async function getCategoryIds(){
  *
  * Returns array of category ids
  */
-let catIDs = [];
+// let catIDs = [];
 let res = await axios.get('https://jservice.io/api/categories?count=100');
-catIDs = _.sampleSize(res.data.map(cat => cat.id),6);
+let catIDs = _.sampleSize(res.data.map(cat => cat.id),6);
 //console.log(catIDs);
 return catIDs;
 }
@@ -65,16 +65,15 @@ return { title: cat.title, clues: clues};
 *   (initally, just show a "?" where the question/answer would go.)
 */
 
-function fillTable() {
+async function fillTable() {
 //empty out the Jeopardy Head
 $jeopardyHead.empty();
-console.log(categories);
+// console.log(categories);
   //add a row with headers with categories - now loop through the array of Objects and each index to get the title
 let $tr = $("<tr>");
 for (let catIdx = 0; catIdx < 6; catIdx++){
-$tr.append($("<th>").attr("class", "col-2 align-middle").text(categories[catIdx].title));
-
-};
+    $tr.append($("<th>").attr("class", "col-2 align-middle").text(categories[catIdx].title));
+  };
 $jeopardyHead.append($tr);
 
 //Add rows w/ questions & clear out the body
@@ -134,22 +133,16 @@ return ($(`#${catID}-${clueID}`).html(cardFace));
 */
 
 function showLoadingView() {
-$(".BOARD").empty();
-
-$(".SPIN").show();
-$("#start").show();
-$(".BOARD").hide();
-$("#restart").hide();
-}
+    $(".SPIN").show();
+    $(".BOARD").hide();
+  }
 
 /** Remove the loading spinner and update the button used to fetch data. */
 
 function hideLoadingView() {
-$(".SPIN").hide();
-$("#start").hide();
-$(".BOARD").show();
-$("#restart").show();
-}
+    $(".SPIN").hide();
+    $(".BOARD").show();
+  }
 
 /** Start game:
 *
@@ -159,40 +152,34 @@ $("#restart").show();
 * */
 
 async function setupAndStart() {
+  
+  let catIDs = await getCategoryIds();
 
-let catIDs = await getCategoryIds();
-categories = [];
-for(let catID of catIDs){
-categories.push(await getCategory(catID));
-}
+  categories = [];
+
+  for(let catID of catIDs){
+    categories.push(await getCategory(catID));
+    }
+
 //console.log(categories);
-
-fillTable(categories);
-
-hideLoadingView();
+  
+  fillTable();
+  hideLoadingView();
 }
 
 /** On click of start / restart button, set up game. */
 $("#start").on("click", setupAndStart);
-$("#restart").on("click", showLoadingView);
 // TODO
 
 /** On page load, add event handler for clicking clues */
 
 $(async function(){
-setupAndStart;
-
-$jeopardyBody.on("click", "td", function(e){
-$(e.target).removeClass("UNCLICKED");
-$(e.target).addClass("CLICKED");
-});
-$("#jeopardy").on("click", "td", handleClick);
-
-$("#restart").on("click", function(){
-$("#jeopardy").empty();
-showLoadingView();
-// console.log($("#jeopardy"));
-});
+  setupAndStart;
+  $("#jeopardy").on("click", "td", handleClick);
+  $jeopardyBody.on("click", "td", function(e){
+    $(e.target).removeClass("UNCLICKED");
+    $(e.target).addClass("CLICKED");
+    });
 });
 
 
